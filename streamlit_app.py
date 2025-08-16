@@ -41,19 +41,17 @@ if "current_page" not in st.session_state:
     st.session_state.current_page = "Overview"
 
 # Navigation buttons
-col1, col2 = st.sidebar.columns(2)
+if st.sidebar.button("📊 Overview", use_container_width=True):
+    st.session_state.current_page = "Overview"
 
-with col1:
-    if st.button("📊 Overview", use_container_width=True):
-        st.session_state.current_page = "Overview"
-    if st.button("🔥 Heating", use_container_width=True):
-        st.session_state.current_page = "Heating"
+if st.sidebar.button("🔥 Heating", use_container_width=True):
+    st.session_state.current_page = "Heating"
 
-with col2:
-    if st.button("⚡ Electricity", use_container_width=True):
-        st.session_state.current_page = "Electricity"
-    if st.button("☀️ Photovoltaics", use_container_width=True):
-        st.session_state.current_page = "Photovoltaics"
+if st.sidebar.button("⚡ Electricity", use_container_width=True):
+    st.session_state.current_page = "Electricity"
+
+if st.sidebar.button("☀️ Photovoltaics", use_container_width=True):
+    st.session_state.current_page = "Photovoltaics"
 
 page = st.session_state.current_page
 
