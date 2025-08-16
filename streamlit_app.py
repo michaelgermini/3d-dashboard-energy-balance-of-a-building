@@ -11,7 +11,8 @@ st.set_page_config(
 )
 
 # Sidebar menu
-st.sidebar.title("Menu")
+st.sidebar.title("🏢 Energy Dashboard")
+st.sidebar.markdown("---")
 
 # Data loader
 @st.cache_data(show_spinner=False)
@@ -34,15 +35,24 @@ def get_value(df: pd.DataFrame, column: str, default: str) -> str:
         return str(df.iloc[-1][column])
     except Exception:
         return default
-page = st.sidebar.selectbox(
-    "Navigation",
-    (
-        "Overview",
-        "Heating",
-        "Electricity",
-        "Photovoltaics",
-    ),
-)
+
+# Navigation buttons
+if st.sidebar.button("📊 Overview", use_container_width=True):
+    page = "Overview"
+elif st.sidebar.button("🔥 Heating", use_container_width=True):
+    page = "Heating"
+elif st.sidebar.button("⚡ Electricity", use_container_width=True):
+    page = "Electricity"
+elif st.sidebar.button("☀️ Photovoltaics", use_container_width=True):
+    page = "Photovoltaics"
+else:
+    page = "Overview"  # Default page
+
+st.sidebar.markdown("---")
+st.sidebar.markdown("**📈 Live Demo:**")
+st.sidebar.markdown("[Open Dashboard](https://3d-dashboard-energy-balance-building.streamlit.app/)")
+st.sidebar.markdown("**📋 Data Source:**")
+st.sidebar.markdown("`data/kpis_energie.csv`")
 
 # Shared 3D figure: simple building volume
 
