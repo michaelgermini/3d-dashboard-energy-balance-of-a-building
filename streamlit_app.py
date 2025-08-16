@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 from pathlib import Path
 
 st.set_page_config(
-    page_title="Dashboard 3D - Bilan énergétique",
+    page_title="3D Dashboard - Building Energy Balance",
     page_icon="⚡",
     layout="wide",
 )
@@ -37,10 +37,10 @@ def get_value(df: pd.DataFrame, column: str, default: str) -> str:
 page = st.sidebar.selectbox(
     "Navigation",
     (
-        "Vue d’ensemble",
-        "Chauffage",
-        "Électricité",
-        "Photovoltaïque",
+        "Overview",
+        "Heating",
+        "Electricity",
+        "Photovoltaics",
     ),
 )
 
@@ -62,17 +62,17 @@ def build_building_figure():
         color="lightblue",
         opacity=0.4,
         flatshading=True,
-        name="Bâtiment",
+        name="Building",
     )
 
-    # Simple "panneaux solaires" plane on roof
+    # Simple PV plane on roof
     solar = go.Scatter3d(
         x=[0.3, 1.7, 1.7, 0.3, 0.3],
         y=[0.1, 0.1, 0.9, 0.9, 0.1],
         z=[3.01, 3.01, 3.01, 3.01, 3.01],
         mode="lines",
         line=dict(color="orange", width=6),
-        name="Panneaux PV",
+        name="PV panels",
     )
 
     fig = go.Figure(data=[mesh, solar])
@@ -95,11 +95,11 @@ def kpi_row(cols, items):
         col.metric(label, value, delta)
 
 
-if page == "Vue d’ensemble":
-    st.title("Bilan énergétique du parc immobilier")
+if page == "Overview":
+    st.title("Energy balance of the building portfolio")
     st.caption(
-        "Depuis 2006, la Ville s’engage pour atteindre ses objectifs: 100% renouvelable en 2050, "
-        "consommer moins et produire mieux."
+        "Since 2006, the City has been committed to its goals: 100% renewable by 2050, "
+        "consuming less and producing better."
     )
 
     c1, c2, c3, c4 = st.columns(4)
@@ -113,90 +113,91 @@ if page == "Vue d’ensemble":
     kpi_row(
         (c1, c2, c3, c4),
         [
-            ("Chauffage (2023)", f"{chauffage_delta}%", "tendance à la baisse"),
-            ("Électricité (2023)", f"{elec_delta}%", "optimisations"),
-            ("Production PV", f"~{pv_prod} GWh/an", f"+{pv_centrales} centrales"),
-            ("Chaufferies mazout", f"{mazout} restantes", "remplacement 3-5 ans"),
+            ("Heating (2023)", f"{chauffage_delta}%", "downward trend"),
+            ("Electricity (2023)", f"{elec_delta}%", "optimizations"),
+            ("PV production", f"~{pv_prod} GWh/yr", f"+{pv_centrales} plants"),
+            ("Oil-fired boiler rooms", f"{mazout} remaining", "replacement in 3–5 years"),
         ],
     )
 
     st.plotly_chart(build_building_figure(), use_container_width=True)
 
-    st.subheader("Objectifs 2050")
+    st.subheader("2050 targets")
     st.markdown(
-        "- Sortie des énergies fossiles, raccordements aux réseaux de chaleur renouvelables.\n"
-        "- Efficacité énergétique: optimiser, assainir, réguler dynamiquement.\n"
-        "- Production locale: multiplier l’autoproduction PV (x2 d’ici 2025, x5 d’ici 2030)."
+        "- Phase out fossil fuels, connect to renewable district heating networks.\n"
+        "- Energy efficiency: optimize, retrofit, and implement dynamic regulation.\n"
+        "- Local production: multiply PV self-production (x2 by 2025, x5 by 2030)."
     )
 
-elif page == "Chauffage":
-    st.title("Chauffage")
+elif page == "Heating":
+    st.title("Heating")
 
     c1, c2, c3 = st.columns(3)
     part_gaz = get_value(kpis_df, "part_gaz_pct", "75")
     kpi_row(
         (c1, c2, c3),
         [
-            ("Conso 2023", f"{chauffage_delta}%", "vs 2022"),
-            ("Chaufferies mazout", f"{mazout}", "à remplacer"),
-            ("Gaz (part)", f"{part_gaz}%", "des besoins"),
+            ("Consumption 2023", f"{chauffage_delta}%", "vs 2022"),
+            ("Oil-fired boiler rooms", f"{mazout}", "to be replaced"),
+            ("Gas (share)", f"{part_gaz}%", "of heat needs"),
         ],
     )
 
     st.markdown(
-        "- Raccordement prévu au CAD Eco Jonction (2024): étape clé vers le renouvelable.\n"
-        "- Régulation dynamique: 37 immeubles équipés en 2023; économies 146'000 kWh (mi-oct → fin déc).\n"
-        "- Assainissement des simples vitrages: 128 bâtiments en double vitrage, ~20% d’économie sur le chauffage."
+        "- Connection to CAD Eco Jonction (2024): a key step toward renewables.\n"
+        "- Dynamic regulation: 37 buildings equipped in 2023; 146,000 kWh saved (mid-Oct → end-Dec).\n"
+        "- Single glazing retrofit: 128 buildings upgraded to double glazing, ~20% heating savings."
     )
 
     # Estimation simple d’économies mensuelles Q4 2023
-    months = ["Oct", "Nov", "Déc"]
+    months = ["Oct", "Nov", "Dec"]
     savings = [40_000, 50_000, 56_000]
-    df = pd.DataFrame({"Mois": months, "Économies (kWh)": savings})
-    st.bar_chart(df.set_index("Mois"))
+    df = pd.DataFrame({"Month": months, "Savings (kWh)": savings})
+    st.bar_chart(df.set_index("Month"))
 
     st.plotly_chart(build_building_figure(), use_container_width=True)
 
-elif page == "Électricité":
-    st.title("Électricité")
+elif page == "Electricity":
+    st.title("Electricity")
 
     c1, c2 = st.columns(2)
+    elec_delta = get_value(kpis_df, "conso_elec_delta", "-4.8")
     kpi_row(
         (c1, c2),
         [
-            ("Conso 2023", f"{elec_delta}%", "malgré + parc"),
-            ("Sites optimisés", "+", "rénovations en cours"),
+            ("Consumption 2023", f"{elec_delta}%", "despite larger portfolio"),
+            ("Optimized sites", "+", "renovations in progress"),
         ],
     )
 
     st.markdown(
-        "La consommation est en baisse grâce aux rénovations et à l’optimisation des installations, "
-        "malgré l’augmentation du parc immobilier."
+        "Consumption is decreasing thanks to renovations and system optimizations, "
+        "despite the growing building portfolio."
     )
 
     # Courbe fictive de consommation 2022-2023
     dates = pd.date_range("2023-01-01", periods=12, freq="M")
     base_2022 = np.linspace(100, 110, 12)
     conso_2023 = base_2022 * 0.952  # -4.8%
-    df = pd.DataFrame({"Date": dates, "2022 (base)": base_2022, "2023": conso_2023})
+    df = pd.DataFrame({"Date": dates, "2022 (baseline)": base_2022, "2023": conso_2023})
     st.line_chart(df.set_index("Date"))
 
-elif page == "Photovoltaïque":
-    st.title("Solaire photovoltaïque")
+elif page == "Photovoltaics":
+    st.title("Solar photovoltaics")
 
     c1, c2, c3 = st.columns(3)
     kpi_row(
         (c1, c2, c3),
         [
-            ("Centrales en service", f"{pv_centrales}", "autoconsommation sur 14 sites"),
-            ("Production annuelle", f"~{pv_prod} GWh", "surplus injecté"),
-            ("Objectifs", "x2 (2025), x5 (2030)", "surfaces disponibles"),
+            ("Plants in service", f"{pv_centrales}", "self-consumption on 14 sites"),
+            ("Annual production", f"~{pv_prod} GWh", "surplus injected"),
+            ("Targets", "x2 (2025), x5 (2030)", "available surfaces"),
         ],
     )
 
     st.markdown(
-        "La Ville auto-consomme une partie de l’électricité produite; le surplus est injecté sur le réseau "
-        "(SIG). La stratégie vise à exploiter les toitures et autres surfaces disponibles."
+        "The City self-consumes part of the electricity produced; any surplus is injected into the grid "
+        "(SIG). The strategy aims to leverage rooftops and other available surfaces."
     )
 
     # Indicateur d’avancement vers 2025 et 2030 (fictif)
@@ -211,7 +212,7 @@ elif page == "Photovoltaïque":
         go.Indicator(
             mode="gauge+number",
             value=prog_2025 * 100,
-            title={"text": "Avancement objectif 2025 (x2)"},
+            title={"text": "Progress toward 2025 target (x2)"},
             gauge={"axis": {"range": [0, 100]}},
             domain={"row": 0, "column": 0},
         )
@@ -220,7 +221,7 @@ elif page == "Photovoltaïque":
         go.Indicator(
             mode="gauge+number",
             value=prog_2030 * 100,
-            title={"text": "Avancement objectif 2030 (x5)"},
+            title={"text": "Progress toward 2030 target (x5)"},
             gauge={"axis": {"range": [0, 100]}},
             domain={"row": 0, "column": 1},
         )
