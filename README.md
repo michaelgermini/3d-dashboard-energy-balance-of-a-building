@@ -96,12 +96,6 @@ Open `http://localhost:8501` (or the displayed port) in your browser.
 ## Credits
 Data and context provided by municipal energy policy (KPIs synthesized in the app). Built with Streamlit and Plotly for interactive data visualization.
 
-## Developer
-**Michael Germini**
-- 📧 Email: michael@germimi.info
-- 🌐 Website: [upframe.com](http://upframe.com)
-- 🐙 GitHub: [michaelgermini](https://github.com/michaelgermini)
-
 ## Project Audit Report
 
 ### ✅ **Excellent Points**
@@ -214,6 +208,12 @@ def validate_csv_data(df: pd.DataFrame) -> bool:
 - [x] **Contacts**: Developer information added
 
 **Project 100% operational and professional!** 🚀
+
+## Developer
+**Michael Germini**
+- 📧 Email: michael@germimi.info
+- 🌐 Website: [upframe.com](http://upframe.com)
+- 🐙 GitHub: [michaelgermini](https://github.com/michaelgermini)
 
 ## License
 This project is open source and available under the [MIT License](LICENSE).
