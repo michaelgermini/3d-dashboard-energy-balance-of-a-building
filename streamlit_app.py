@@ -186,6 +186,8 @@ elif page == "Photovoltaics":
     st.title("Solar photovoltaics")
 
     c1, c2, c3 = st.columns(3)
+    pv_centrales = get_value(kpis_df, "pv_centrales", "46")
+    pv_prod = get_value(kpis_df, "pv_prod_gwh", "1.0")
     kpi_row(
         (c1, c2, c3),
         [
