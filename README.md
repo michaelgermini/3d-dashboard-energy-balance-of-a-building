@@ -1,59 +1,100 @@
-# Dashboard 3D – Bilan énergétique d’un bâtiment
+# 3D Dashboard – Building Energy Balance
 
-Application Streamlit présentant le bilan et l’avancement des politiques énergétiques d’un parc immobilier municipal à horizon 2050. L’interface combine un menu latéral, des KPIs, des graphiques et une visualisation 3D simplifiée du bâtiment (Plotly) pour raconter l’évolution de la consommation, du mix énergétique et de la production photovoltaïque.
+A Streamlit application presenting the energy balance and progress of municipal building portfolio energy policies toward 2050 targets. The interface combines a sidebar menu, KPIs, charts, and a simplified 3D building visualization (Plotly) to tell the story of consumption evolution, energy mix, and photovoltaic production.
 
-Démo en ligne: https://3d-dashboard-energy-balance-building.streamlit.app/
+Live demo: https://3d-dashboard-energy-balance-building.streamlit.app/
 
-## Fonctionnalités
-- **Menu latéral**: navigation entre les pages Vue d’ensemble, Chauffage, Électricité, Photovoltaïque
-- **KPIs clés**: variations annuelles, parc d’installations, objectifs atteints/restants
-- **3D Plotly**: volume de bâtiment et position symbolique des panneaux photovoltaïques
-- **Graphiques**: barres et courbes pour tendances de consommation et économies
-- **Indicateurs d’objectifs**: jauges pour le suivi des cibles 2025 (x2) et 2030 (x5) sur le photovoltaïque
+## Features
+- **Sidebar navigation**: seamless switching between Overview, Heating, Electricity, and Photovoltaics pages
+- **Real-time KPIs**: annual variations, installation portfolio, achieved/remaining targets with dynamic updates
+- **3D Plotly visualization**: building volume with symbolic positioning of photovoltaic panels
+- **Interactive charts**: bar charts and line graphs for consumption trends and energy savings
+- **Progress indicators**: gauge charts for tracking 2025 (x2) and 2030 (x5) photovoltaic targets
+- **Data integration**: automatic loading from CSV files with fallback to default values
 
-## Pages
-- **Vue d’ensemble**: synthèse des KPIs (chauffage −8% en 2023, électricité −4.8% en 2023, ~1 GWh/an PV, 42 chaufferies au mazout restantes)
-- **Chauffage**: baisse de la demande, régulation dynamique (37 immeubles équipés en 2023, ~146’000 kWh économisés mi-oct → fin déc), assainissement des vitrages (128 bâtiments, ~20% d’économie), sortie du mazout et raccordements au CAD
-- **Électricité**: tendance −4.8% en 2023 malgré l’augmentation du parc, effets des rénovations et optimisations
-- **Photovoltaïque**: 46 centrales en service, ~1 GWh/an produit, autoconsommation sur 14 sites, surplus injecté (SIG), trajectoires x2 d’ici 2025 et x5 d’ici 2030
+## Pages & Content
+- **Overview**: KPI summary (heating −8% in 2023, electricity −4.8% in 2023, ~1 GWh/yr PV, 42 oil-fired boiler rooms remaining)
+- **Heating**: demand reduction, dynamic regulation (37 buildings equipped in 2023, ~146,000 kWh saved mid-Oct → end-Dec), glazing retrofit (128 buildings, ~20% savings), oil phase-out and district heating connections
+- **Electricity**: −4.8% trend in 2023 despite portfolio growth, effects of renovations and optimizations
+- **Photovoltaics**: 46 plants in service, ~1 GWh/yr produced, self-consumption on 14 sites, surplus injected (SIG), x2 by 2025 and x5 by 2030 trajectories
 
-## Données et hypothèses
-Les valeurs affichées illustrent les ordres de grandeur et objectifs mentionnés (année 2023 et cibles 2025/2030). L’application est prête à être connectée à des données réelles (CSV/Excel/base de données) pour alimenter automatiquement les KPIs et courbes.
+## Data Integration
+The application automatically loads KPIs from `data/kpis_energie.csv` with intelligent fallbacks. Values displayed illustrate the scale and targets mentioned (2023 data and 2025/2030 goals). The app is ready to connect to real data sources (CSV/Excel/database) to automatically feed KPIs and charts.
 
-Intégration typique (exemple CSV):
-1. Ajouter un fichier `data/kpis_energie.csv` avec colonnes: `annee, conso_chauffage_delta, conso_elec_delta, pv_centrales, pv_prod_gwh, mazout_chaufferies, part_gaz_pct`
-2. Charger le fichier dans `streamlit_app.py` (via `pandas.read_csv`) et mapper les colonnes aux KPIs
+### CSV Integration Example
+1. Add a `data/kpis_energie.csv` file with columns: `annee, conso_chauffage_delta, conso_elec_delta, pv_centrales, pv_prod_gwh, mazout_chaufferies, part_gaz_pct`
+2. The app automatically loads the file via `pandas.read_csv` and maps columns to KPIs
+3. If the file is missing or corrupted, the app gracefully falls back to default values
 
-## Lancer en local
+### Data Structure
+```csv
+annee,conso_chauffage_delta,conso_elec_delta,pv_centrales,pv_prod_gwh,mazout_chaufferies,part_gaz_pct
+2023,-8,-4.8,46,1.0,42,75
+```
+
+## Local Development
 
 ```bash
+# Create virtual environment
 python -m venv .venv
+
+# Install dependencies
 .venv\Scripts\pip install -r requirements.txt
+
+# Run the application
 .venv\Scripts\python -m streamlit run streamlit_app.py
 ```
 
-Ouvrir `http://localhost:8501` (ou le port affiché) dans votre navigateur.
+Open `http://localhost:8501` (or the displayed port) in your browser.
 
-## Déploiement – Streamlit Community Cloud
-1. Créez un dépôt GitHub public (ex: `dashboard-3d-bilan-energetique-batiment`).
-2. Poussez ce code dans le dépôt.
-3. Sur Streamlit Cloud, choisissez "New app", connectez votre compte GitHub, sélectionnez le dépôt, branche principale, et fichier principal `streamlit_app.py`.
-4. Laissez l’installation utiliser `requirements.txt`.
+## Deployment – Streamlit Community Cloud
+1. Create a public GitHub repository (e.g., `dashboard-3d-bilan-energetique-batiment`)
+2. Push this code to the repository
+3. On Streamlit Cloud, choose "New app", connect your GitHub account, select the repository, main branch, and main file `streamlit_app.py`
+4. Let the installation use `requirements.txt`
 
-## Pile technologique
-- **Python**: Streamlit, pandas, numpy
-- **Visualisation**: Plotly (graphes et Mesh3d)
-- **Déploiement**: Streamlit Community Cloud
+## Technology Stack
+- **Backend**: Python 3.13+, Streamlit 1.48+
+- **Data processing**: pandas, numpy
+- **Visualization**: Plotly (charts and Mesh3d for 3D)
+- **Deployment**: Streamlit Community Cloud
+- **Version control**: Git, GitHub
 
-## Structure
-- `streamlit_app.py`: application principale
-- `requirements.txt`: dépendances Python
+## Project Structure
+```
+├── streamlit_app.py          # Main application
+├── requirements.txt          # Python dependencies
+├── data/
+│   └── kpis_energie.csv     # Sample KPI data
+├── .gitignore               # Git ignore rules
+└── README.md                # This file
+```
 
-## Feuille de route (suggestions)
-- Import automatique de données (CSV/Excel/API) et historisation multi-années
-- Cartographie et multiples bâtiments avec sélecteur
-- Modèle 3D plus riche (surfaces, teintes par intensité énergétique)
-- Exports PDF des tableaux de bord
+## Key Features Implementation
+- **Cached data loading**: `@st.cache_data` for efficient CSV reading
+- **Error handling**: Graceful fallbacks when data files are missing
+- **Responsive design**: Wide layout with adaptive columns
+- **3D visualization**: Interactive Plotly Mesh3d with custom styling
+- **Dynamic KPIs**: Real-time updates from data sources
 
-## Crédits
-Données et contexte fournis par la politique énergétique municipale (KPIs synthétisés dans l’app).
+## Roadmap & Future Enhancements
+- **Multi-year data**: Historical trends and forecasting capabilities
+- **Geographic mapping**: Multiple buildings with location-based selection
+- **Enhanced 3D models**: Richer building representations with energy intensity coloring
+- **PDF exports**: Dashboard reports generation
+- **API integration**: Real-time data feeds from building management systems
+- **User authentication**: Role-based access control
+- **Mobile optimization**: Responsive design for mobile devices
+
+## Contributing
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Credits
+Data and context provided by municipal energy policy (KPIs synthesized in the app). Built with Streamlit and Plotly for interactive data visualization.
+
+## License
+This project is open source and available under the [MIT License](LICENSE).
