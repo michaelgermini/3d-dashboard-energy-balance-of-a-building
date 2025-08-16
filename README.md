@@ -96,5 +96,11 @@ Open `http://localhost:8501` (or the displayed port) in your browser.
 ## Credits
 Data and context provided by municipal energy policy (KPIs synthesized in the app). Built with Streamlit and Plotly for interactive data visualization.
 
+## Developer
+**Michael Germini**
+- 📧 Email: michael@germimi.info
+- 🌐 Website: [upframe.com](http://upframe.com)
+- 🐙 GitHub: [michaelgermini](https://github.com/michaelgermini)
+
 ## License
 This project is open source and available under the [MIT License](LICENSE).

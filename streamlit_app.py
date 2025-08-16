@@ -61,6 +61,13 @@ st.sidebar.markdown("[Open Dashboard](https://3d-dashboard-energy-balance-buildi
 st.sidebar.markdown("**📋 Data Source:**")
 st.sidebar.markdown("`data/kpis_energie.csv`")
 
+st.sidebar.markdown("---")
+st.sidebar.markdown("**👨‍💻 Developer:**")
+st.sidebar.markdown("**Michael Germini**")
+st.sidebar.markdown("📧 michael@germimi.info")
+st.sidebar.markdown("🌐 [upframe.com](http://upframe.com)")
+st.sidebar.markdown("🐙 [GitHub](https://github.com/michaelgermini)")
+
 # Shared 3D figure: simple building volume
 
 def build_building_figure():
