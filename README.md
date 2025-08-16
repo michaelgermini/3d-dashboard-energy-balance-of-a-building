@@ -2,6 +2,8 @@
 
 Application Streamlit avec menu latéral (Vue d’ensemble, Chauffage, Électricité, Photovoltaïque), KPIs et visualisation 3D (Plotly).
 
+Démo en ligne: https://3d-dashboard-energy-balance-building.streamlit.app/
+
 ## Lancer en local
 
 ```bash
