@@ -133,6 +133,8 @@ elif page == "Heating":
     st.title("Heating")
 
     c1, c2, c3 = st.columns(3)
+    chauffage_delta = get_value(kpis_df, "conso_chauffage_delta", "-8")
+    mazout = get_value(kpis_df, "mazout_chaufferies", "42")
     part_gaz = get_value(kpis_df, "part_gaz_pct", "75")
     kpi_row(
         (c1, c2, c3),
