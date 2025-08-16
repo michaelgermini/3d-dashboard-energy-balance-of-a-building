@@ -36,17 +36,26 @@ def get_value(df: pd.DataFrame, column: str, default: str) -> str:
     except Exception:
         return default
 
+# Initialize session state for navigation
+if "current_page" not in st.session_state:
+    st.session_state.current_page = "Overview"
+
 # Navigation buttons
-if st.sidebar.button("📊 Overview", use_container_width=True):
-    page = "Overview"
-elif st.sidebar.button("🔥 Heating", use_container_width=True):
-    page = "Heating"
-elif st.sidebar.button("⚡ Electricity", use_container_width=True):
-    page = "Electricity"
-elif st.sidebar.button("☀️ Photovoltaics", use_container_width=True):
-    page = "Photovoltaics"
-else:
-    page = "Overview"  # Default page
+col1, col2 = st.sidebar.columns(2)
+
+with col1:
+    if st.button("📊 Overview", use_container_width=True):
+        st.session_state.current_page = "Overview"
+    if st.button("🔥 Heating", use_container_width=True):
+        st.session_state.current_page = "Heating"
+
+with col2:
+    if st.button("⚡ Electricity", use_container_width=True):
+        st.session_state.current_page = "Electricity"
+    if st.button("☀️ Photovoltaics", use_container_width=True):
+        st.session_state.current_page = "Photovoltaics"
+
+page = st.session_state.current_page
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("**📈 Live Demo:**")
