@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
+from pathlib import Path
 
 st.set_page_config(
     page_title="Dashboard 3D - Bilan énergétique",
@@ -11,6 +12,28 @@ st.set_page_config(
 
 # Sidebar menu
 st.sidebar.title("Menu")
+
+# Data loader
+@st.cache_data(show_spinner=False)
+def load_kpis(csv_path: str | Path) -> pd.DataFrame:
+    path = Path(csv_path)
+    if not path.exists():
+        return pd.DataFrame()
+    try:
+        df = pd.read_csv(path)
+        return df
+    except Exception:
+        return pd.DataFrame()
+
+kpis_df = load_kpis("data/kpis_energie.csv")
+
+def get_value(df: pd.DataFrame, column: str, default: str) -> str:
+    if df is None or df.empty or column not in df.columns:
+        return default
+    try:
+        return str(df.iloc[-1][column])
+    except Exception:
+        return default
 page = st.sidebar.selectbox(
     "Navigation",
     (
@@ -80,13 +103,20 @@ if page == "Vue d’ensemble":
     )
 
     c1, c2, c3, c4 = st.columns(4)
+    # Values from CSV with fallbacks
+    chauffage_delta = get_value(kpis_df, "conso_chauffage_delta", "-8")
+    elec_delta = get_value(kpis_df, "conso_elec_delta", "-4.8")
+    pv_prod = get_value(kpis_df, "pv_prod_gwh", "1.0")
+    pv_centrales = get_value(kpis_df, "pv_centrales", "46")
+    mazout = get_value(kpis_df, "mazout_chaufferies", "42")
+
     kpi_row(
         (c1, c2, c3, c4),
         [
-            ("Chauffage (2023)", "-8%", "tendance à la baisse"),
-            ("Électricité (2023)", "-4.8%", "optimisations"),
-            ("Production PV", "~1 GWh/an", "+46 centrales"),
-            ("Chaufferies mazout", "42 restantes", "remplacement 3-5 ans"),
+            ("Chauffage (2023)", f"{chauffage_delta}%", "tendance à la baisse"),
+            ("Électricité (2023)", f"{elec_delta}%", "optimisations"),
+            ("Production PV", f"~{pv_prod} GWh/an", f"+{pv_centrales} centrales"),
+            ("Chaufferies mazout", f"{mazout} restantes", "remplacement 3-5 ans"),
         ],
     )
 
@@ -103,12 +133,13 @@ elif page == "Chauffage":
     st.title("Chauffage")
 
     c1, c2, c3 = st.columns(3)
+    part_gaz = get_value(kpis_df, "part_gaz_pct", "75")
     kpi_row(
         (c1, c2, c3),
         [
-            ("Conso 2023", "-8%", "vs 2022"),
-            ("Chaufferies mazout", "42", "à remplacer"),
-            ("Gaz (part)", "75%", "des besoins"),
+            ("Conso 2023", f"{chauffage_delta}%", "vs 2022"),
+            ("Chaufferies mazout", f"{mazout}", "à remplacer"),
+            ("Gaz (part)", f"{part_gaz}%", "des besoins"),
         ],
     )
 
@@ -133,7 +164,7 @@ elif page == "Électricité":
     kpi_row(
         (c1, c2),
         [
-            ("Conso 2023", "-4.8%", "malgré + parc"),
+            ("Conso 2023", f"{elec_delta}%", "malgré + parc"),
             ("Sites optimisés", "+", "rénovations en cours"),
         ],
     )
@@ -157,8 +188,8 @@ elif page == "Photovoltaïque":
     kpi_row(
         (c1, c2, c3),
         [
-            ("Centrales en service", "46", "autoconsommation sur 14 sites"),
-            ("Production annuelle", "~1 GWh", "surplus injecté"),
+            ("Centrales en service", f"{pv_centrales}", "autoconsommation sur 14 sites"),
+            ("Production annuelle", f"~{pv_prod} GWh", "surplus injecté"),
             ("Objectifs", "x2 (2025), x5 (2030)", "surfaces disponibles"),
         ],
     )
